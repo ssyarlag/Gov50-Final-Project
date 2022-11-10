@@ -18,6 +18,7 @@ Broadly, I'd like to study an internationally-focused topic. My interests are la
 
 # install.packages("readxl")
 library("readxl")
+library(tidyverse)
 
 ```
 
@@ -29,3 +30,16 @@ Data Citation:
 Cohen, Dara Kay and Ragnhild Nordås. 2014. Sexual Violence in Armed Conflict Dataset. [2022], from the Sexual Violence in Armed Conflict Dataset website: http://www.sexualviolencedata.org
 
 Does the scale of a conflict impact the prevalence of sexual violence? Through my analysis, which uses the Sexual Violence Data Set, I hope to explore how the expansiveness of a violent conflict (that is, the breadth of the location of its actors) impacts the prevalence of acts of sexual violence as an act of war. My hypothesis is that the more expansive a conflict is (ie, if the actors are different states rather than actors within a state), the more likely it is that acts of sexual violence will be widespread. This is because I hypothesize that conflicts involving multiple states cover a wider geographical area, allowing for a higher prevalence of violent actions. My sample is recorded acts of sexual violence during armed conflict committed by armed actors between 1989 and 2019. My unit of analysis is armed conflicts between 1989 and 2019. My explanatory variable is the scale of the armed conflict during which an act of sexual violence is committed. This variable is coded 2 = Interstate Conflict, 3 = Intrastate Conflict, 4 = Internationalized Internal Armed Conflict. I intend to recode this variable so that it increases by the scale of the conflict (1 = Intrastate Conflict, 2 = Internationalized Internal Armed Conflict, 3 = Interstate conflict). My outcome variable is the expansiveness of sexual violence in an area. It is coded 0 = None, 1 = Isolated, 2 = Numerous, 3 = Massive, and -99 for no data. This variable is also disaggregated amongst three different sources and I will account for this by taking the highest number reported across the three sources (in line with the methodology of this data set's code, which codes for the higher number in this variable given conflicting information). I will see evidence that my hypothesis is correct if higher values of my explanatory variable (which suggests a wider scale of war) is associated with higher expansiveness of sexual violence (my outcome variable). If I see the opposite relationship, with higher values of conflict expansiveness being associated with lower rates of sexual violence, or, alternatively, no substantive relationship, then I will see that my hypothesis is incorrect. 
+
+
+```{r Histogram of Violence}
+
+svdata <- svdata |>
+  mutate(prev_agg = pmax(state_prev, ai_prev, hrw_prev, na.rm = TRUE)) |>
+  filter(prev_agg != -99)
+  
+ggplot(data = svdata, mapping = aes(x = prev_agg)) + 
+  geom_histogram(binwidth = 1, color = "indianred1") + 
+  labs(x = "Prevalence Rates of Sexual Violence in Armed Conflict" , y = "Count")
+```
+
